@@ -1,0 +1,32 @@
+HK Launcher
+Copyright 2026 Husain Kaydawala
+
+This product includes software developed by Husain Kaydawala.
+
+=========================================================================
+Trademarks and Disclaimers
+=========================================================================
+"Minecraft" is a registered trademark of Mojang Synergies AB / Microsoft Corporation.
+HK Launcher is an independent, open-source utility and is not affiliated with,
+endorsed by, sponsored by, or associated with Mojang Studios, Microsoft,
+or any of their affiliates.
+
+=========================================================================
+Third-Party Software and Attributions
+=========================================================================
+This project incorporates or interacts with third-party software:
+
+1. Electron (MIT License)
+   Copyright (c) OpenJS Foundation and Electron Contributors
+
+2. adm-zip (MIT License)
+   Copyright (c) 2012-2024 Various contributors
+
+3. Fabric Loader and Fabric API (Apache License 2.0)
+   Copyright (c) FabricMC
+
+4. Modrinth API (Modrinth)
+   API access subject to Modrinth Terms of Use
+
+5. Mojang Product & Java Runtime Manifests
+   Used for version discovery and official client file verification.

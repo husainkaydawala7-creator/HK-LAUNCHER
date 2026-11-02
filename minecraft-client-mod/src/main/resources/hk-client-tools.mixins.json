@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.hklauncher.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ChatScreenMixin",
+    "GameMenuScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

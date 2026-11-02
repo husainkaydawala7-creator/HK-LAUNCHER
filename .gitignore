@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+package-lock.json.backup
+
+# Production & Packaging Builds
+dist/
+out/
+build/
+*.exe
+*.blockmap
+*.zip
+builder-debug.yml
+
+# Environment & Secrets
+.env
+.env.*
+*.pem
+*.key
+*.cert
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+ehthumbs.db
+
+# IDE & Editor Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+*.backup
+
+# Application Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+launcher-app/logs/
+instances/**/logs/
+
+# Local User Data & Launcher Runtime State
+launcher-app/accounts/
+launcher-app/launch-profiles/
+launcher-app/servers/
+launcher-app/settings.json
+launcher-app/settings/
+launcher-data/
+scratch/
+.agents/
+
+# Minecraft Game Caches & Assets (Downloaded by Mojang manifest at runtime)
+shared-minecraft/assets/
+shared-minecraft/libraries/
+shared-minecraft/versions/
+shared-minecraft/*.json
+
+# Local Minecraft Instances & Profiles
+instances/
+profiles/
+
+# Gradle & Mod Build Artifacts
+.gradle/
+.gradle-local/
+gradle-*.zip
+minecraft-client-mod/.gradle/
+minecraft-client-mod/build/
+
+# Keep structure files
+!.gitkeep

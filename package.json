@@ -1,0 +1,83 @@
+{
+  "name": "hk-launcher",
+  "version": "0.1.0",
+  "description": "HK Launcher – A modern Minecraft Java Edition launcher built with Electron, featuring Microsoft authentication, Fabric support, multi-account management and customizable launch settings.",
+  "main": "launcher-app/main.js",
+  "scripts": {
+    "start": "electron .",
+    "check": "node launcher-app/scripts/check-config.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win nsis"
+  },
+  "keywords": [
+    "minecraft",
+    "launcher",
+    "fabric",
+    "electron",
+    "modrinth",
+    "fps-optimizer"
+  ],
+  "author": "Husain Kaydawala",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/husainkaydawala7-creator/HK-Launcher.git"
+  },
+  "devDependencies": {
+    "electron": "^42.3.3",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.17"
+  },
+  "build": {
+    "appId": "com.hk.launcher",
+    "productName": "HK Launcher",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "package.json",
+      "launcher-app/main.js",
+      "launcher-app/preload.js",
+      "launcher-app/renderer/**/*",
+      "launcher-app/services/**/*",
+      "src/fpsOptimizer/**/*",
+      "node_modules/adm-zip/**/*",
+      "!launcher-app/accounts/**",
+      "!launcher-app/launch-profiles/**",
+      "!launcher-app/logs/**",
+      "!launcher-app/servers/**",
+      "!launcher-app/settings.json",
+      "!launcher-data/**",
+      "!instances/**",
+      "!shared-minecraft/**",
+      "!profiles/**",
+      "!minecraft-client-mod/**",
+      "!**/*.map",
+      "!**/*.ts",
+      "!**/test/**",
+      "!**/tests/**",
+      "!**/*.log"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "HK-Launcher-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "HK Launcher"
+    }
+  }
+}

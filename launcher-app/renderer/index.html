@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HK Launcher</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- Window Drag Titlebar -->
+    <header class="window-bar">
+      <div class="window-drag">
+        <div class="window-badge" aria-hidden="true">HK</div>
+        <div class="window-title">
+          <strong>HK Launcher</strong>
+          <span>Minecraft Java Edition</span>
+        </div>
+      </div>
+      <div class="window-actions">
+        <button id="windowMinimize" class="window-button window-minimize" type="button" aria-label="Minimize" title="Minimize">
+          <span>&#8722;</span>
+        </button>
+        <button id="windowMaximize" class="window-button window-maximize" type="button" aria-label="Maximize" title="Maximize">
+          <span>&#9633;</span>
+        </button>
+        <button id="windowClose" class="window-button window-close" type="button" aria-label="Close" title="Close">
+          <span>&#10005;</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <!-- Background Graphic Layers -->
+      <div class="mc-bg-wallpaper" aria-hidden="true"></div>
+      <div class="mc-bg-overlay" aria-hidden="true"></div>
+
+      <!-- Compact Top Navigation (Minecraft Style) -->
+      <nav class="app-nav-bar" aria-label="Launcher sections">
+        <div class="nav-brand">
+          <span class="brand-text">HK LAUNCHER</span>
+        </div>
+
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="home" type="button">Play</button>
+          <button class="tab" data-tab="accounts" type="button">Accounts</button>
+          <button class="tab" data-tab="mods" type="button">Mods</button>
+          <button class="tab" data-tab="packs" type="button">Packs</button>
+          <button class="tab" data-tab="versions" type="button">Versions</button>
+          <!-- Servers removed -->
+          <button class="tab" data-tab="settings" type="button">Settings</button>
+          <!-- Logs removed -->
+        </div>
+
+        <div class="nav-right-badge">
+          <span id="networkStatusPill" class="network-badge online">● Online</span>
+          <span class="mc-online-dot"></span>
+          <span>Ready</span>
+        </div>
+      </nav>
+
+      <!-- Main Content Container -->
+      <main class="content-viewport">
+
+        <!-- ================= 1. HOME SCREEN: MINECRAFT LOGO + LAUNCH DOCK ================= -->
+        <section id="home" class="panel active">
+          <div class="minecraft-stage">
+            <!-- Central Minecraft Logo -->
+            <div class="hero-logo-box">
+              <img src="./assets/minecraft-logo.svg" class="hero-minecraft-logo" alt="Minecraft" />
+              <div class="edition-subtext">JAVA EDITION</div>
+            </div>
+
+            <!-- Bottom Launch Control Dock (Authentic Minecraft Layout) -->
+            <div class="launch-dock">
+              <!-- Left: Player Profile / Quick Switch -->
+              <div class="dock-cell dock-account-cell">
+                <div class="dock-avatar" id="homeAvatarBadge">
+                  <span>&#128100;</span>
+                </div>
+                <div class="dock-account-info">
+                  <span class="dock-micro-label">PLAYER</span>
+                  <h2 id="homeAccount">COOLJAAZ</h2>
+                  <label class="dock-account-select-wrap">
+                    <select id="homeTaggedAccount"></select>
+                  </label>
+                </div>
+                <button type="button" class="dock-subtle-btn" data-home-tab="accounts" title="Manage Accounts">
+                  Switch
+                </button>
+              </div>
+
+              <!-- Center: Giant Minecraft Green PLAY Button -->
+              <div class="dock-cell dock-play-cell">
+                <button id="homeLaunch" class="mc-play-btn" type="button">
+                  PLAY
+                </button>
+                <div id="launchStatus" class="mc-status-line">Ready to play</div>
+                <div class="progress-shell"><div id="launchProgressBar" class="progress-bar"></div></div>
+              </div>
+
+              <!-- Right: Installation Version Details -->
+              <div class="dock-cell dock-version-cell">
+                <div class="dock-version-info">
+                  <span class="dock-micro-label">VERSION</span>
+                  <strong id="homeVersion">1.21.1 / Fabric</strong>
+                  <span id="homeProfile" class="dock-profile-sub">Auto-Optimized</span>
+                </div>
+                <button type="button" class="dock-subtle-btn" data-home-tab="versions" title="Select Version">
+                  Change
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 2. ACCOUNTS MANAGER ================= -->
+        <section id="accounts" class="panel">
+          <div class="section-header">
+            <div>
+              <h2>Accounts</h2>
+              <p class="muted">Add local accounts to play offline / singleplayer, or sign in with Microsoft.</p>
+            </div>
+            <button id="startMicrosoftLogin" class="btn-ms-login" type="button">
+              <svg width="18" height="18" viewBox="0 0 21 21" style="vertical-align: middle; margin-right: 8px;">
+                <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+              </svg>
+              Sign in with Microsoft
+            </button>
+          </div>
+
+          <!-- Microsoft Login Flow -->
+          <div class="auth-box">
+            <p id="microsoftLoginMessage" class="muted">Sign in with official Microsoft account to sync your skins and multiplayer profile.</p>
+            <div id="microsoftCode" class="auth-code"></div>
+            <button id="completeMicrosoftLogin" class="btn-mc-secondary" disabled type="button" style="display:none;">Complete login</button>
+          </div>
+
+          <!-- Add Local Account Form -->
+          <div class="mc-card">
+            <div class="card-title-row">
+              <h3>Add Local Account</h3>
+              <span class="badge-pill">Free &amp; Offline</span>
+            </div>
+            <form id="localAccountForm" class="form-grid">
+              <label>Player Name
+                <input id="localAccountName" required placeholder="e.g. Steve or Alex" autocomplete="off" />
+              </label>
+              <label>Instance Folder
+                <input id="localAccountInstance" placeholder="Optional (e.g. local-player)" />
+              </label>
+              <label>Skin URL (HTTPS)
+                <input id="localAccountSkin" placeholder="Optional (https://...)" />
+              </label>
+              <div class="form-action-col">
+                <button class="btn-mc-green" type="submit">Add Account</button>
+              </div>
+            </form>
+            <div id="localAccountStatus" class="status-line"></div>
+            <p class="muted small-note">Local accounts let you play singleplayer and offline-mode servers without needing a Microsoft account.</p>
+          </div>
+
+          <div class="section-title-row">
+            <div>
+              <h3>Saved Accounts</h3>
+              <p class="muted">Click an account override or remove an account when needed.</p>
+            </div>
+          </div>
+          <div id="accountCards" class="cards-grid"></div>
+        </section>
+
+        <!-- ================= 3. MODS ================= -->
+        <section id="mods" class="panel">
+          <div class="section-header">
+            <div>
+              <h2>Mods Management</h2>
+              <p class="muted">Drag &amp; drop .jar files or install directly from the official Modrinth catalog.</p>
+            </div>
+            <button id="addMods" class="btn-mc-green" type="button">Add Mods (.jar)</button>
+          </div>
+          <div class="content-tools-bar">
+            <label class="compact-label">Profile:
+              <select id="modsProfileSelect"></select>
+            </label>
+            <button id="openModsFolder" class="btn-mc-secondary" type="button">Open Mods Folder</button>
+            <button id="analyzeMods" class="btn-mc-secondary" type="button">Check Compatibility</button>
+          </div>
+
+          <!-- Drag and Drop Zone -->
+          <div id="modsDropZone" class="drop-zone">
+            <span class="drop-icon">📦</span>
+            <span class="drop-text">Drag &amp; drop <strong>.jar</strong> mod files here to import automatically</span>
+          </div>
+          <div id="modsImportStatus" class="status-line"></div>
+          <div id="modAnalysis" class="status-card"></div>
+
+          <div class="content-split-grid">
+            <article class="mc-card">
+              <div class="card-title-row">
+                <h3>Installed Mods</h3>
+                <span id="installedModsCount" class="badge-pill">0</span>
+              </div>
+              <div id="installedModsList" class="file-list"></div>
+            </article>
+
+            <article class="mc-card modrinth-pane">
+              <div class="card-title-row">
+                <h3>Modrinth Catalog</h3>
+                <span class="badge-pill">One-Click Install</span>
+              </div>
+              <div class="modrinth-search-bar">
+                <input id="modrinthSearchInput" placeholder="Search Modrinth (Sodium, Iris, Lithium)..." />
+                <select id="modrinthCategorySelect">
+                  <option value="">All Categories</option>
+                  <option value="optimization">Optimization</option>
+                  <option value="utility">Utility</option>
+                  <option value="fabric">Fabric</option>
+                </select>
+                <button id="modrinthSearchBtn" class="btn-mc-secondary" type="button">Search</button>
+              </div>
+              <div id="modrinthStatus" class="status-line"></div>
+              <div id="modCards" class="suggestion-list modrinth-cards-list"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ================= 4. RESOURCE PACKS ================= -->
+        <section id="packs" class="panel">
+          <div class="section-header">
+            <div>
+              <h2>Resource Packs</h2>
+              <p class="muted">Manage texture packs and shaders.</p>
+            </div>
+            <button id="addResourcePacks" class="btn-mc-green" type="button">Add Resource Packs (.zip)</button>
+          </div>
+          <div class="content-tools-bar">
+            <label class="compact-label">Profile:
+              <select id="packsProfileSelect"></select>
+            </label>
+            <button id="openResourcePacksFolder" class="btn-mc-secondary" type="button">Open Packs Folder</button>
+          </div>
+
+          <!-- Drag and Drop Zone -->
+          <div id="packsDropZone" class="drop-zone">
+            <span class="drop-icon">🎨</span>
+            <span class="drop-text">Drag &amp; drop <strong>.zip</strong> texture/shader packs here to import</span>
+          </div>
+          <div id="packsImportStatus" class="status-line"></div>
+
+          <div class="content-split-grid">
+            <article class="mc-card">
+              <h3>Installed Resource Packs</h3>
+              <div id="installedResourcePacksList" class="file-list"></div>
+            </article>
+            <article class="mc-card">
+              <h3>Featured Packs</h3>
+              <div id="packCards" class="suggestion-list"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ================= 5. VERSIONS ================= -->
+        <section id="versions" class="panel">
+          <div class="section-header">
+            <div>
+              <h2>Game Versions</h2>
+              <p class="muted">Official Mojang releases, snapshots, and Fabric versions.</p>
+            </div>
+            <button id="refreshVersions" class="btn-mc-secondary" type="button">Refresh Versions</button>
+          </div>
+          <div class="version-filter-bar">
+            <label>Filter:
+              <select id="versionFilter">
+                <option value="release">Releases</option>
+                <option value="snapshot">Snapshots</option>
+                <option value="old_beta">Old Beta</option>
+                <option value="old_alpha">Old Alpha</option>
+                <option value="all">All Versions</option>
+              </select>
+            </label>
+            <label>Search:
+              <input id="versionSearch" placeholder="e.g. 1.21.1" />
+            </label>
+          </div>
+          <div id="versionStatus" class="status-line"></div>
+          <div class="progress-shell"><div id="versionProgressBar" class="progress-bar"></div></div>
+          <div id="versionList" class="version-list-grid"></div>
+        </section>
+
+        <!-- ================= 6. SERVERS ================= -->
+        <section id="servers" class="panel" hidden>
+          <div class="section-header">
+            <div>
+              <h2>Multiplayer Servers</h2>
+              <p class="muted">Ping check server health and save favorites.</p>
+            </div>
+          </div>
+          <form id="serverPingForm" class="form-grid">
+            <label>Server Address
+              <input id="serverAddress" placeholder="e.g. play.hypixel.net" />
+            </label>
+            <button class="btn-mc-green" type="submit">Ping Check</button>
+          </form>
+          <div id="serverPingOutput" class="status-line"></div>
+
+          <div class="mc-card">
+            <h3>Add Saved Server</h3>
+            <form id="savedServerForm" class="form-grid">
+              <input id="savedServerId" type="hidden" />
+              <label>Name<input id="savedServerName" placeholder="My Server" /></label>
+              <label>Address<input id="savedServerAddress" placeholder="play.example.net" /></label>
+              <label>Version<input id="savedServerVersion" placeholder="1.21.1 Fabric" /></label>
+              <label>Preferred Account<select id="savedServerAccount"></select></label>
+              <label class="wide-label">Notes<input id="savedServerNotes" placeholder="Vanilla survival" /></label>
+              <div class="form-action-col">
+                <button class="btn-mc-green" type="submit">Save Server</button>
+              </div>
+            </form>
+          </div>
+          <div id="savedServerCards" class="cards-grid"></div>
+
+          <div class="mc-card">
+            <div class="card-title-row">
+              <h3>Server Login Vault</h3>
+              <span class="badge-pill">Local Encrypted</span>
+            </div>
+            <form id="serverLoginForm" class="form-grid">
+              <input id="serverLoginId" type="hidden" />
+              <label>Label<input id="serverLoginLabel" required placeholder="Server Name" /></label>
+              <label>Server<input id="serverLoginAddress" placeholder="play.example.net" /></label>
+              <label>Username<input id="serverLoginUsername" placeholder="Optional" /></label>
+              <label>Prefix<input id="serverLoginCommand" value="/login" /></label>
+              <label>Password<input id="serverLoginPassword" type="password" placeholder="Leave blank to keep" /></label>
+              <div class="form-action-col">
+                <button class="btn-mc-green" type="submit">Save Login</button>
+              </div>
+            </form>
+            <div id="serverLoginStatus" class="status-line"></div>
+            <div id="serverLoginCards" class="cards-grid"></div>
+          </div>
+        </section>
+
+        <!-- ================= 7. SETTINGS ================= -->
+        <section id="settings" class="panel">
+          <div class="section-header">
+            <div>
+              <h2>Settings</h2>
+              <p class="muted">Manage your Java runtime, memory allocation, and game options.</p>
+            </div>
+          </div>
+
+          <form id="settingsForm">
+            <div class="settings-grid">
+              <!-- Card 1: Game & Mod Loader -->
+              <article class="mc-card settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                      <path d="M6 12h4m-2-2v4m7-3h.01m3 0h.01"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3>Game Version &amp; Loader</h3>
+                    <p class="muted">Select your Minecraft version and modding platform.</p>
+                  </div>
+                </div>
+                <div class="settings-fields">
+                  <label>Minecraft Version
+                    <select id="minecraftVersionId"></select>
+                  </label>
+                  <label>Mod Loader
+                    <select id="sharedModloader">
+                      <option value="fabric">Fabric (Modded)</option>
+                      <option value="vanilla">Vanilla (Pure Minecraft)</option>
+                    </select>
+                  </label>
+                </div>
+              </article>
+
+              <!-- Card 2: Memory (RAM) Allocation -->
+              <article class="mc-card settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="2" width="20" height="8" rx="2"></rect>
+                      <rect x="2" y="14" width="20" height="8" rx="2"></rect>
+                      <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                      <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3>Memory (RAM)</h3>
+                    <p class="muted">Dedicated memory for Minecraft (4096 MB recommended).</p>
+                  </div>
+                </div>
+                <div class="settings-fields">
+                  <label>Allocated RAM (MB)
+                    <input id="sharedRamMb" type="number" min="1024" max="32768" step="256" />
+                  </label>
+                  <div class="ram-presets-row">
+                    <button type="button" class="btn-preset" data-ram="2048">2 GB</button>
+                    <button type="button" class="btn-preset" data-ram="4096">4 GB</button>
+                    <button type="button" class="btn-preset" data-ram="6144">6 GB</button>
+                    <button type="button" class="btn-preset" data-ram="8192">8 GB</button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 3: Java Executable & Auto Downloader -->
+              <article class="mc-card settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                      <line x1="6" y1="1" x2="6" y2="4"></line>
+                      <line x1="10" y1="1" x2="10" y2="4"></line>
+                      <line x1="14" y1="1" x2="14" y2="4"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3>Java Runtime Environment</h3>
+                    <p class="muted">Dynamic detection &amp; official Mojang JRE downloader.</p>
+                  </div>
+                </div>
+                <div class="settings-fields">
+                  <label>Detected Java Installations
+                    <div class="select-with-btn">
+                      <select id="detectedJavaSelect">
+                        <option value="">Scanning installed Javas...</option>
+                      </select>
+                      <button id="refreshJavaDetectBtn" type="button" class="btn-mc-secondary btn-icon-small" title="Rescan system for Java">↻</button>
+                    </div>
+                  </label>
+                  <label>Selected Java Path
+                    <input id="javaPath" required />
+                  </label>
+                  <div class="java-auto-download-box">
+                    <div class="java-auto-download-title">
+                      <span>Official Mojang Portable Runtimes</span>
+                      <span class="badge-pill">Auto Download</span>
+                    </div>
+                    <div class="java-runtime-buttons">
+                      <button type="button" class="btn-preset btn-download-java" data-runtime-major="21">Install Java 21 (MC 1.20.5+)</button>
+                      <button type="button" class="btn-preset btn-download-java" data-runtime-major="17">Install Java 17 (MC 1.18+)</button>
+                      <button type="button" class="btn-preset btn-download-java" data-runtime-major="8">Install Java 8 (Legacy)</button>
+                    </div>
+                    <div id="javaDownloadStatus" class="status-line"></div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 4: Game Resolution & Options -->
+              <article class="mc-card settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                      <line x1="8" y1="21" x2="16" y2="21"></line>
+                      <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3>Resolution &amp; Launcher</h3>
+                    <p class="muted">Window dimensions and launcher behavior.</p>
+                  </div>
+                </div>
+                <div class="settings-fields">
+                  <div class="resolution-row">
+                    <label>Window Width
+                      <input id="sharedWindowWidth" type="number" min="640" />
+                    </label>
+                    <label>Window Height
+                      <input id="sharedWindowHeight" type="number" min="360" />
+                    </label>
+                  </div>
+                  <label class="check-box-label settings-check">
+                    <input id="closeLauncherAfterLaunch" type="checkbox" /> Close launcher after Minecraft starts
+                  </label>
+                </div>
+              </article>
+            </div>
+
+            <!-- Preserved hidden inputs for background compatibility -->
+            <div hidden style="display: none !important;">
+              <input id="microsoftClientId" />
+              <input id="fabricVersionId" />
+              <input id="sharedFpsCap" type="number" />
+              <input id="sharedRenderDistance" type="number" />
+              <input id="serverIp" />
+              <input id="maxParallelLaunches" type="number" />
+              <input id="staggerLaunchMs" type="number" />
+              <select id="updateChannel">
+                <option value="stable">Stable</option>
+                <option value="beta">Beta</option>
+              </select>
+              <input id="lowPriorityAfk" type="checkbox" />
+              <div id="paths"></div>
+            </div>
+
+            <div class="settings-footer">
+              <button class="btn-mc-green btn-save-settings" type="submit">Save Settings</button>
+              <span id="settingsSaveStatus" class="status-line"></span>
+            </div>
+          </form>
+        </section>
+
+        <!-- ================= 8. LOGS ================= -->
+        <section id="logs" class="panel" hidden>
+          <div class="section-header">
+            <div>
+              <h2>Minecraft Logs</h2>
+              <p class="muted">Game output and crash reports.</p>
+            </div>
+            <div class="header-actions">
+              <select id="logAccount"></select>
+              <button id="analyzeCrash" class="btn-mc-secondary" type="button">Analyze Crash</button>
+            </div>
+          </div>
+          <div id="crashAnalysis" class="status-card"></div>
+          <pre id="logOutput" class="log-output-box"></pre>
+        </section>
+
+        <!-- ================= HIDDEN / SECONDARY PANELS (DOM PRESERVATION) ================= -->
+        <section id="launch" class="panel" hidden>
+          <div class="section-header">
+            <h2>Multi-Account Launch</h2>
+            <button id="launchSelected" class="btn-mc-green" type="button">Launch Selected</button>
+          </div>
+          <div id="accountLaunchList" class="list"></div>
+          <details class="quiet-details">
+            <summary>Download events and progress</summary>
+            <div id="downloadEvents" class="mini-feed"></div>
+          </details>
+        </section>
+
+        <section id="instances" class="panel" hidden>
+          <h2>Running Instances</h2>
+          <div id="runningInstances" class="list"></div>
+          <div id="instanceRows" class="list" hidden></div>
+        </section>
+
+        <section id="backups" class="panel" hidden>
+          <h2>Backups</h2>
+          <button id="openBackupsFolder" class="btn-mc-secondary" type="button">Open Backups Folder</button>
+          <form id="backupForm" class="form-grid">
+            <label>Backup Target<select id="backupAccount"></select></label>
+            <label>Label<input id="backupLabel" placeholder="e.g. backup-1" /></label>
+            <button class="btn-mc-green" type="submit">Create Backup</button>
+          </form>
+          <div id="backupStatus" class="status-line"></div>
+          <div id="backupList" class="list"></div>
+        </section>
+
+        <section id="security" class="panel" hidden>
+          <h2>Security &amp; Vault</h2>
+          <button id="clearServerLogins" class="btn-danger" type="button">Clear Saved Logins</button>
+          <div id="securityStatus" class="status-line"></div>
+        </section>
+
+        <section id="java" class="panel" hidden>
+          <button id="checkJavaHealth" type="button">Check Java</button>
+          <div id="javaHealthOutput"></div>
+          <div id="javaCards"></div>
+        </section>
+
+        <section id="repair" class="panel" hidden>
+          <button id="runRepair" type="button">Run Repair</button>
+          <div id="repairOutput"></div>
+        </section>
+
+        <section id="performance" class="panel" hidden>
+          <div id="setupPresetCards"></div>
+          <div id="performanceCards"></div>
+          <button id="applySetupPreset" type="button"></button>
+          <button id="applyPerformanceMode" type="button"></button>
+        </section>
+
+        <section id="fpsOptimizer" class="panel" hidden>
+          <button id="scanFpsOptimizer" type="button">Scan</button>
+          <button id="applyFpsOptimization" type="button">Apply</button>
+          <button id="resetFpsOptimization" type="button">Reset</button>
+          <button id="installRecommendedMods" type="button">Install Mods</button>
+          <div id="fpsOptimizerStatus"></div>
+          <div id="fpsOptimizerScore"></div>
+          <div id="fpsOptimizerHardware"></div>
+          <div id="fpsOptimizerCurrent"></div>
+          <div id="fpsOptimizerPresets"></div>
+          <div id="fpsOptimizerAdvancedModes"></div>
+          <div id="fpsOptimizerSuggestions"></div>
+          <div id="fpsOptimizerBeforeAfter"></div>
+          <div id="fpsOptimizerMods"></div>
+          <div id="fpsOptimizerMultiAccount"></div>
+          <div id="fpsOptimizerWarnings"></div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Optimization Confirmation Modal (Hidden by Default) -->
+    <div id="fpsConfirmModal" class="modal-backdrop" hidden style="display: none !important;">
+      <section class="modal-card">
+        <div class="card-title-row">
+          <h3>Performance Settings</h3>
+        </div>
+        <p class="muted">Optimizations will be saved for this launcher profile.</p>
+        <div id="fpsConfirmList" class="optimizer-list"></div>
+        <div class="modal-actions">
+          <button id="cancelFpsApply" class="btn-mc-secondary" type="button">Cancel</button>
+          <button id="confirmFpsApply" class="btn-mc-green" type="button">Confirm</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>
